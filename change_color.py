@@ -2,7 +2,6 @@ import cv2
 import os
 import numpy as np
 import threading
-from skimage.restoration import inpaint
 
 
 class GrabCut(threading.Thread):
@@ -85,7 +84,7 @@ class GrabCut(threading.Thread):
         return result
         
     def on_trackbar(self,val):
-        
+        self.thickness = cv2.getTrackbarPos("Thickness Size", self.windowName)
         red_hue = cv2.getTrackbarPos("Color Scale Hue Up", self.windowName)
         blue_hue = cv2.getTrackbarPos("Color Scale Hue Down", self.windowName)
         diff_hue = red_hue - blue_hue
@@ -97,6 +96,8 @@ class GrabCut(threading.Thread):
  
         try :
             result = self.apply_color_change(self.image_new, self.grapcut_mask, diff_hue, brightness_change)
+            
+            self.finaldst = result
             cv2.imshow(self.windowName, result)
         except:
             pass
@@ -104,6 +105,7 @@ class GrabCut(threading.Thread):
        
         
     def init_trakingBar(self):
+        cv2.createTrackbar("Thickness Size", self.windowName, 1, 10, self.on_trackbar)
         cv2.createTrackbar("Color Scale Hue Up", self.windowName, 0, 255, self.on_trackbar)
         cv2.createTrackbar("Color Scale Hue Down", self.windowName, 0, 255, self.on_trackbar)
 
@@ -122,6 +124,7 @@ class GrabCut(threading.Thread):
                 Press 'm' : Toggle mode (e.g., exit drawing mode)
                 Press 'c' : Enable circle drawing mode
                 Press 'g' : Run the GrabCut algorithm
+                Press 's' : Save results image
                 
                 Drawing Modes:
                 --------------
@@ -153,8 +156,15 @@ class GrabCut(threading.Thread):
                     self.update_photo(self.i)
                     print(f'\r --- Moving to the previous photo...                          ', end='', flush=True)
             elif code == ord("s"): # Press 's' save the current photo
-                dstpath = self.dstfolderpath+"/"+self.current_image
-                cv2.imwrite(dstpath,self.finaldst*255)
+                dstpath = self.dstfolderpath+"/"+self.current_image+"_result"
+                if self.finaldst is None:
+                    print(f"{self.finaldst} is empty (None) \n", end='', flush=True)
+                elif self.finaldst.size == 0:
+                    print("Final destination image is empty (size=0) \n", end='', flush=True)
+                else:  
+                    cv2.imwrite(dstpath, self.finaldst)
+                    print(f"Image saved to {dstpath} \n")
+                    
             elif code == ord("m"):  # Press 'm' to toggle mode (e.g., exit drawing mode)
                 self.mode = not self.mode
                 self.draw_circle = False
