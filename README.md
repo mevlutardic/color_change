@@ -1,5 +1,7 @@
 # Dynamic Image Color Manipulation Tool
 
+![Tool Screenshot](results/Acure-Nsx.jpg)
+
 ## Overview
 This project is a dynamic image manipulation tool built using **Python** and **OpenCV**. The application enables real-time modification of an image's **hue (color tone)** and **brightness** using interactive trackbars. By utilizing masks, you can also selectively apply these adjustments to specific areas of an image.
 
