@@ -81,6 +81,7 @@ class GrabCut(threading.Thread):
         mask_3ch = cv2.merge([mask, mask, mask])
         
         result = np.where(mask_3ch == 255, bgr_new, self.image_new)
+        
         return result
         
     def on_trackbar(self,val):
@@ -211,8 +212,8 @@ class GrabCut(threading.Thread):
             overlay = self.image_drawing.copy()
             self.output = cv2.bitwise_and(self.img, self.img, mask=self.grapcut_mask)
             contours, hierarchy = cv2.findContours( cv2.cvtColor(self.output, cv2.COLOR_BGR2GRAY), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-            cv2.drawContours(self.image_drawing, contours, -1, (255, 0, 205), -1)
-            alpha = 0.6
+            cv2.drawContours(self.image_drawing, contours, -1, (255, 100, 205), -1)
+            alpha = 0.5
             self.image_drawing = cv2.addWeighted(overlay, alpha, self.image_drawing, 1 - alpha, 0) 
             cv2.imshow(self.windowName, self.image_drawing)
             self.image_drawing = self.img.copy()
@@ -242,7 +243,7 @@ class GrabCut(threading.Thread):
                     iy = self.start_point_rect[1]
                     overlay = self.image_drawing.copy() 
                     cv2.rectangle(self.image_drawing, (ix, iy), (x, y), self.BLUE, 3)
-                    alpha = 0.6
+                    alpha = 0.5
                     self.image_drawing = cv2.addWeighted(overlay, alpha, self.image_drawing, 1 - alpha, 0) 
                     self.rect = (min(ix, x), min(iy, y), abs(ix - x), abs(iy - y))
                     self.rect_or_mask = 0
@@ -265,7 +266,7 @@ class GrabCut(threading.Thread):
                     overlay = self.image_drawing.copy()
                     cv2.circle(self.image_drawing, (x, y), self.thickness, self.value['color'], -1)
                     cv2.circle(self.mask, (x, y), self.thickness, self.value['val'], -1)
-                    alpha = 0.8
+                    alpha = 0.5
                     self.image_drawing = cv2.addWeighted(overlay, alpha, self.image_drawing, 1 - alpha, 0) 
                     cv2.imshow(self.windowName, self.image_drawing)
             elif event == cv2.EVENT_LBUTTONUP:
@@ -274,7 +275,7 @@ class GrabCut(threading.Thread):
                     overlay = self.image_drawing.copy()
                     cv2.circle(self.image_drawing, (x, y), self.thickness, self.value['color'], -1)
                     cv2.circle(self.mask, (x, y), self.thickness, self.value['val'], -1)
-                    alpha = 0.8
+                    alpha = 0.5
                     self.image_drawing = cv2.addWeighted(overlay, alpha, self.image_drawing, 1 - alpha, 0) 
                     cv2.imshow(self.windowName, self.image_drawing)
                    
